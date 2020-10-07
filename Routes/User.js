@@ -163,4 +163,17 @@ router.put(
   }
 );
 
+//@route PUT api/profile
+router.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    if (!users) return res.status(404).json("Users not found");
+
+    res.json(users);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json("Internal Server Error");
+  }
+});
+
 module.exports = router;
