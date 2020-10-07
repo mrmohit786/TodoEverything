@@ -1,3 +1,5 @@
 {
-  "URL": "mongodb+srv://admin:warrior786@todoeverything.xwpzm.mongodb.net/TodoEverything?retryWrites=true&w=majority"
+  "URL": "mongodb+srv://admin:warrior786@todoeverything.xwpzm.mongodb.net/TodoEverything?retryWrites=true&w=majority",
+  "secret": "hacker",
+  "api_key": "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"
 }
