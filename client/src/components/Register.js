@@ -1,91 +1,102 @@
 import React, { Fragment, useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
+  //Set Input Values
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
-    errors: [],
+    erros: false,
+    success: false,
   });
-  let { name, email, password, errors } = values;
 
+  //Destructure values
+  const { name, email, password, errors, success } = values;
+
+  //get Input value
   const onChange = (e) =>
     setValues({ ...values, [e.target.name]: e.target.value });
 
+  // on submit
   const onSubmit = async (event) => {
+    //prevent page to reload
     event.preventDefault();
-    console.log(JSON.stringify({ name, email, password }));
+
+    //add header to axios request
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
 
+    //convert data to json string
     const body = JSON.stringify({ name, email, password });
 
     try {
+      // @api POST register user
       const res = await axios.post(
         "http://localhost:5000/api/register",
         body,
         config
       );
 
-      if (res.data) {
-        console.log(res.data);
-        setValues({
-          ...values,
-          name: "",
-          email: "",
-          password: "",
-          errors: [],
-        });
-
-        return <Redirect to="/" />;
+      //check if user not register
+      if (!res.data) {
+        console.log("REGISTRATION FAILED");
       }
-    } catch (error) {
-      errors = error.response.data.errors;
-      console.log(errors);
+
+      if (res.data) {
+        setValues({ ...values, success: true });
+      }
+
+      //reset input values
+      setValues({
+        ...values,
+        name: "",
+        email: "",
+        password: "",
+        errors: false,
+        success: true,
+      });
+    } catch (err) {
+      if (err) {
+        setValues({ ...values, errors: err.response.data.errors });
+      }
     }
   };
-
-  const errorMessage = (errors) => {
-    return errors.map((error, index) => (
-      <div className="row">
-        <div className="col-md-6 offset-sm-3 text-left">
-          <div className="alert alert-danger">
-            <h3 key={index}>{error.msg}</h3>
-          </div>
-        </div>
-      </div>
-    ));
-  };
-
-  // const successMessage = () => {
-  //   return (
-  //     <div className="row">
-  //       <div className="col-md-6 offset-sm-3 text-left">
-  //         <div
-  //           className="alert alert-success"
-  //           style={{ display: success ? "" : "none" }}
-  //         >
-  //           New account was created successfully. Please
-  //           <Link className="bg-success" to="/signin">
-  //             Login Here
-  //           </Link>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   return (
     <Fragment>
       <div className="container p-3 mt-3">
         <h3>REGISTER</h3>
-        {errors && errorMessage(errors)}
-        <form className="form-group" onSubmit={(e) => onSubmit(e)}>
+
+        {errors &&
+          errors.map((error, index) => (
+            <div key={index} className="row">
+              <div className="col-sm text-left">
+                <div className="alert alert-danger">
+                  <p>{error.msg}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+
+        {success && (
+          <div className="row">
+            <div className="col-sm text-left">
+              <div className="alert alert-success">
+                Register Successfully , Please{" "}
+                <Link className="text-success" to="/login">
+                  Login Here
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={(e) => onSubmit(e)}>
           <div className="form-group">
             <label>Name</label>
             <input

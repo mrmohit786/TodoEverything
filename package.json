@@ -4,9 +4,11 @@
   "description": "To Do everything.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server",
-    "server": "nodemon server"
+    "start-dev": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run start-dev\" \"npm run client\"",
+    "heroku_postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "Mohit Patel",
   "license": "ISC",
@@ -20,6 +22,7 @@
     "mongoose": "^5.10.7"
   },
   "devDependencies": {
+    "concurrently": "^5.3.0",
     "nodemon": "^2.0.4"
   }
 }

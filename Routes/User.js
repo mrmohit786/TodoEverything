@@ -27,7 +27,10 @@ router.post(
 
     try {
       let user = await User.findOne({ email });
-      if (user) return res.status(404).json("User already exist");
+      if (user)
+        return res
+          .status(404)
+          .json({ errors: [{ msg: "User already exist" }] });
 
       user = new User({ name, email, password });
 
@@ -51,7 +54,7 @@ router.post(
     check(
       "password",
       "Please enter password with minimum 6 characters"
-    ).exists(),
+    ).isLength({ min: 6 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -62,12 +65,17 @@ router.post(
 
     try {
       let user = await User.findOne({ email });
-      if (!user) return res.status(404).json("Invalid Credentials");
+      if (!user)
+        return res
+          .status(404)
+          .json({ errors: [{ msg: "Invalid Credentials" }] });
 
       const matchPassword = await bcrypt.compare(password, user.password);
 
       if (!matchPassword) {
-        return res.status(400).json("Invalid Credentials");
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
 
       const payload = {
