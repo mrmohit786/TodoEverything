@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const config = require("config");
+const cors = require("cors");
 const url = config.get("URL");
 const User = require("./Routes/User");
 const Task = require("./Routes/Task");
@@ -14,7 +15,7 @@ mongoose
   .catch((error) => console.log("Database Error" + error));
 
 const app = express();
-
+app.use(cors());
 const PORT = 5000;
 app.use(express.json({ extended: true }));
 
